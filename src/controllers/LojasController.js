@@ -22,6 +22,19 @@ module.exports = {
     },
 
     /**
+     * @return lojas especialistas
+     */
+    async getLojasEspecialistas(req, res) {
+        const lojasEspecialistas = await Lojas.findAll({
+            where: {
+                especialista: 1
+            }
+        })
+
+        return res.json(lojasEspecialistas)
+    },
+
+    /**
      * @params nome, codigo e especialista do body
      * 
      * @return msg de sucesso
@@ -37,14 +50,18 @@ module.exports = {
     },
 
     /**
-     * @params id da loja
+     * @params codigo da loja
      * 
      * @return msg de sucesso
      */
     async delete(req, res) {
-        const { loja_id } = req.params;
+        const { loja_codigo } = req.params;
 
-        const loja = await Lojas.findByPk(loja_id);
+        const loja = await Lojas.findOne({ 
+            where: { 
+                codigo: loja_codigo 
+            } 
+        });
 
         if (!loja) {
             return res.status(400).json({mensagem: "Loja não encontrada"});
