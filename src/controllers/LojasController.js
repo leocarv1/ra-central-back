@@ -35,18 +35,83 @@ module.exports = {
     },
 
     /**
+     * @return lojas varejo online
+     */
+    async getLojasVarejoOnline(req, res) {
+        const lojasVarejoOnline = await Lojas.findAll({
+            where: {
+                varejo_online: 1
+            }
+        })
+
+        return res.json(lojasVarejoOnline);
+    },
+
+    async getDados(req, res) {
+        const { loja_codigo } = req.params; 
+
+        const loja = await Lojas.findOne({ 
+            where: { 
+                codigo: loja_codigo
+            } 
+        });
+
+        return res.json(loja);
+    },
+
+    /**
      * @params nome, codigo e especialista do body
      * 
      * @return msg de sucesso
      */
     async store(req, res) {
-        const { nome, codigo, especialista } = req.body;
+        const { nome, codigo, especialista, varejo_online } = req.body;
 
-        await Lojas.create({ nome, codigo, especialista});
+        await Lojas.create({ nome, codigo, especialista, varejo_online});
 
         return res.json({
             mensagem: "Loja adicionada com sucesso!"
         });
+    },
+
+    /**
+     * 
+     * @param {*} req dados da loja
+     * @param {*} res loja atualizada
+     */
+    async update(req, res) {
+        try {
+            const { loja_codigo } = req.params;
+            const { especialista, varejo_online } = req.body;
+    
+            // Procurar a loja no banco de dados
+            const loja = await Lojas.findOne({
+                where: {
+                    codigo: loja_codigo
+                }
+            });
+    
+            // Se a loja não existir, retornar uma mensagem de erro
+            if (!loja) {
+                return res.status(400).json({ mensagem: "Loja não encontrada" });
+            }
+    
+            // Atualizar os campos desejados
+            // loja.nome = nome || loja.nome;
+            // loja.codigo = codigo || loja.codigo;
+            loja.especialista = especialista;
+            loja.varejo_online = varejo_online;
+    
+            // Salvar as alterações no banco de dados
+            await loja.save();
+    
+            // Retornar a loja atualizada
+            return res.json({ mensagem: "Loja atualizada com sucesso", loja });
+        } catch (error) {
+            // Em caso de erro, retornar uma mensagem de erro genérica
+            console.error(error);
+            return res.status(500).json({ mensagem: "Erro ao atualizar a loja" });
+        }
     },
 
     /**

@@ -6,6 +6,7 @@ class Loja extends Model {
             nome: DataTypes.STRING,
             codigo: DataTypes.INTEGER,
             especialista: DataTypes.BOOLEAN,
+            varejo_online: DataTypes.BOOLEAN
         }, {
             sequelize
         })
