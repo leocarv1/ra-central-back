@@ -47,6 +47,20 @@ module.exports = {
         return res.json(lojasVarejoOnline);
     },
 
+    /**
+     * @return lojas varejo online
+     */
+    async getLojasVarejoOnlineEspecialista(req, res) {
+        const lojasVarejoOnlineEspecialista = await Lojas.findAll({
+            where: {
+                varejo_online: 1,
+                especialista: 1
+            }
+        })
+
+        return res.json(lojasVarejoOnlineEspecialista);
+    },
+
     async getDados(req, res) {
         const { loja_codigo } = req.params; 
 
@@ -60,7 +74,7 @@ module.exports = {
     },
 
     /**
-     * @params nome, codigo e especialista do body
+     * @params {*} req nome, codigo e especialista do body
      * 
      * @return msg de sucesso
      */
