@@ -74,14 +74,26 @@ module.exports = {
     },
 
     /**
-     * @params {*} req nome, codigo e especialista do body
+     * @param {*} req nome, codigo, especialista e varejo online do body
      * 
-     * @return msg de sucesso
+     * @return {*} res msg
      */
     async store(req, res) {
         const { nome, codigo, especialista, varejo_online } = req.body;
 
-        await Lojas.create({ nome, codigo, especialista, varejo_online});
+        const loja = await Lojas.findOne({ 
+            where: { 
+                codigo: codigo
+            } 
+        });
+
+        if (!loja) {
+            await Lojas.create({ nome, codigo, especialista, varejo_online});
+        } else {
+            return res.json({
+                mensagem: "Loja já existe!"
+            });
+        }
 
         return res.json({
             mensagem: "Loja adicionada com sucesso!"
